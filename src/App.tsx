@@ -1,24 +1,19 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-
-function Home() {
-    return <h1>Trang chủ</h1>
-}
-
-function About() {
-    return <h1>Giới thiệu</h1>
-}
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Header from './component/Header'
+import Footer from './component/Footer'
+import Navigation from './component/Navigation'
 
 function App() {
     return (
         <BrowserRouter>
-            <nav>
-                <Link to="/">Trang chủ</Link> | <Link to="/about">Giới thiệu</Link>
-            </nav>
-
-            <Routes>
-                <Route path="/" element={<Home/>} />
-                <Route path="/about" element={<About/>}/>
-            </Routes>
+            <Header />
+            <Navigation />
+            <main className="container py-4" style={{ minHeight: '100vh' }}>
+                <Routes>
+                    <Route path="/" element={<h2>Trang chủ</h2>} />
+                </Routes>
+            </main>
+            <Footer />
         </BrowserRouter>
     )
 }
