@@ -1,19 +1,20 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Header from './component/Header'
-import Footer from './component/Footer'
-import Navigation from './component/Navigation'
+import Layout from "./component/Layout.tsx";
+import HomePage from "./pages/HomePage.tsx";
+import CategoryPage from "./pages/CategoryPage.tsx";
+import ArticleDetailPage from "./pages/ArticleDetailPage.tsx";
+
 
 function App() {
     return (
         <BrowserRouter>
-            <Header />
-            <Navigation />
-            <main className="container py-4" style={{ minHeight: '100vh' }}>
-                <Routes>
-                    <Route path="/" element={<h2>Trang chủ</h2>} />
-                </Routes>
-            </main>
-            <Footer />
+            <Routes>
+                <Route element={<Layout />}>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/category/:slug" element={<CategoryPage />} />
+                    <Route path="/article/:id" element={<ArticleDetailPage />} />
+                </Route>
+            </Routes>
         </BrowserRouter>
     )
 }
