@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { Article } from '../types/article'
+import {getCategoryName} from "../data/categories.ts";
 
 interface Props {
     article: Article
@@ -19,7 +20,7 @@ export default function FeaturedArticle({ article }: Props) {
                     className="position-absolute bottom-0 start-0 end-0 p-4 text-white"
                     style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.85))' }}
                 >
-                    <span className="badge bg-danger text-uppercase mb-2">{article.category}</span>
+                    <span className="badge bg-danger text-uppercase mb-2">{getCategoryName(article.category)}</span>
                     <h2 className="h3 fw-bold mb-1">{article.title}</h2>
                     <p className="mb-0 small">{article.summary}</p>
                 </div>
