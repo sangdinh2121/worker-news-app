@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { Article } from '../types/article'
+import {getCategoryName} from "../data/categories.ts";
 
 interface Props {
     article: Article
@@ -20,10 +21,10 @@ export default function ArticleCard({ article }: Props) {
             </Link>
             <div className="card-body d-flex flex-column">
                 <Link
-                    to={`/category/${article.category}`}
+                    to={`/category/${getCategoryName(article.category)}`}
                     className="small fw-bold text-uppercase text-danger text-decoration-none"
                 >
-                    {article.category}
+                    {getCategoryName(article.category)}
                 </Link>
                 <h5 className="card-title mt-1">
                     <Link to={`/article/${article.id}`} className="text-dark text-decoration-none">
