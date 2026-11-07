@@ -1,43 +1,10 @@
-import { useEffect, useState } from 'react'
-import { getArticles } from '../services/articleService'
-import type { Article } from '../types/article'
+import { useArticles } from '../hooks/useArticles'
 import FeaturedArticle from '../component/FeaturedArticle'
 import ArticleCard from '../component/ArticleCard'
 import ArticleList from '../component/ArticleList'
 
 export default function HomePage() {
-    const [articles, setArticles] = useState<Article[]>([])
-    const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
-
-    useEffect(() => {
-        let isActive = true
-
-        getArticles()
-            .then((loadedArticles) => {
-                if (isActive) {
-                    setArticles(loadedArticles)
-                }
-            })
-            .catch((loadError: unknown) => {
-                if (isActive) {
-                    setError(
-                        loadError instanceof Error
-                            ? loadError.message
-                            : 'Không thể tải danh sách bài viết.',
-                    )
-                }
-            })
-            .finally(() => {
-                if (isActive) {
-                    setIsLoading(false)
-                }
-            })
-
-        return () => {
-            isActive = false
-        }
-    }, [])
+    const { articles, isLoading, error } = useArticles()
 
     if (isLoading) {
         return (
