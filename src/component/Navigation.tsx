@@ -1,25 +1,26 @@
 import {NavLink} from "react-router-dom";
-
-const categories = [
-    { name: 'Trang chủ', path: '/' },
-    { name: 'Thời sự', path: '/category/thoi-su' },
-    { name: 'Thế giới', path: '/category/the-gioi' },
-    { name: 'Kinh doanh', path: '/category/kinh-doanh' },
-    { name: 'Công nghệ', path: '/category/cong-nghe' },
-    { name: 'Thể thao', path: '/category/the-thao' },
-    { name: 'Giải trí', path: '/category/giai-tri' },
-]
+import { categories } from '../data/categories'
 
 export default function Navigation() {
     return (
         <nav className="bg-danger">
             <div className="container">
                 <ul className="nav">
+                    <li className="nav-item">
+                        <NavLink
+                            to="/"
+                            end
+                            className={({ isActive }) =>
+                                'nav-link text-white' + (isActive ? ' fw-bold bg-dark bg-opacity-25' : '')
+                            }
+                        >
+                            Trang chủ
+                        </NavLink>
+                    </li>
                     {categories.map((item) => (
-                        <li className="nav-item" key={item.path}>
+                        <li className="nav-item" key={item.slug}>
                             <NavLink
-                                to={item.path}
-                                end={item.path === '/'}
+                                to={`/category/${item.slug}`}
                                 className={({ isActive }) =>
                                     'nav-link text-white' + (isActive ? ' fw-bold bg-dark bg-opacity-25' : '')
                                 }
