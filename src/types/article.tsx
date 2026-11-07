@@ -1,8 +1,10 @@
+import type { CategorySlug } from './category'
+
 export interface Article {
     id: number
     title: string
     slug: string
-    category: string
+    category: CategorySlug
     summary: string
     image: string
     author: string
