@@ -3,6 +3,7 @@ import Layout from "./component/Layout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
 import ArticleDetailPage from "./pages/ArticleDetailPage.tsx";
+import SearchPage from "./pages/SearchPage.tsx";
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/category/:slug" element={<CategoryPage />} />
                     <Route path="/article/:id" element={<ArticleDetailPage />} />
+                    <Route path="/search" element={<SearchPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
