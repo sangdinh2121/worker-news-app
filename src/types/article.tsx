@@ -10,4 +10,5 @@ export interface Article {
     author: string
     publishedAt: string
     featured?: boolean
+    content?: string
 }
