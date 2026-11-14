@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useArticles } from '../hooks/useArticles'
 import { getCategoryName } from '../data/categories'
 import ArticleList from '../component/ArticleList'
+import FavoriteButton from '../component/FavoriteButton'
 
 export default function ArticleDetailPage() {
     const { id } = useParams()
@@ -43,6 +44,9 @@ export default function ArticleDetailPage() {
                 <p className="text-muted">
                     {article.author} • {new Date(article.publishedAt).toLocaleDateString('vi-VN')}
                 </p>
+                <div className="mb-3">
+                    <FavoriteButton articleId={article.id} />
+                </div>
                 <img src={article.image} alt={article.title} className="img-fluid rounded mb-4" />
                 <p className="lead">{article.summary}</p>
                 <div style={{ whiteSpace: 'pre-line' }}>

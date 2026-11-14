@@ -17,6 +17,16 @@ export default function Navigation() {
                             Trang chủ
                         </NavLink>
                     </li>
+                    <li className="nav-item">
+                        <NavLink
+                            to="/favorites"
+                            className={({ isActive }) =>
+                                'nav-link text-white' + (isActive ? ' fw-bold bg-dark bg-opacity-25' : '')
+                            }
+                        >
+                            Tin đã lưu
+                        </NavLink>
+                    </li>
                     {categories.map((item) => (
                         <li className="nav-item" key={item.slug}>
                             <NavLink

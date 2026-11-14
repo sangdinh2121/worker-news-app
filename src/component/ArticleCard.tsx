@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { Article } from '../types/article'
 import {getCategoryName} from "../data/categories.ts";
+import FavoriteButton from './FavoriteButton'
 
 interface Props {
     article: Article
@@ -32,6 +33,9 @@ export default function ArticleCard({ article }: Props) {
                     </Link>
                 </h5>
                 <p className="card-text text-muted small">{article.summary}</p>
+                <div className="mb-3">
+                    <FavoriteButton articleId={article.id} />
+                </div>
                 <small className="text-muted mt-auto">
                     {article.author} • {date}
                 </small>
