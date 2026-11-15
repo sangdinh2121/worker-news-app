@@ -1,4 +1,4 @@
-import { articles as sampleArticles } from '../data/sampleArticles'
+import { articles as sampleArticles } from '../data/sampleArticles.ts'
 import { categories as sampleCategories } from '../data/categories'
 import type { Article } from '../types/article'
 import type { Category } from '../types/category'
