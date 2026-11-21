@@ -1,12 +1,14 @@
 import { useParams, Link } from 'react-router-dom'
 import { useArticles } from '../hooks/useArticles'
+import { useArticle } from '../hooks/useArticle'
 import { getCategoryName } from '../data/categories'
 import ArticleList from '../component/ArticleList'
 import FavoriteButton from '../component/FavoriteButton'
 
 export default function ArticleDetailPage() {
     const { id } = useParams()
-    const { articles, isLoading, error } = useArticles()
+    const { article, isLoading, error } = useArticle(id)
+    const { articles, isLoading: relatedLoading, error: relatedError } = useArticles()
 
     if (isLoading) {
         return <p className="text-center text-muted" role="status">Đang tải bài viết...</p>
@@ -15,8 +17,6 @@ export default function ArticleDetailPage() {
     if (error) {
         return <p className="alert alert-danger" role="alert">{error}</p>
     }
-
-    const article = articles.find((a) => a.id === Number(id))
 
     if (!article) {
         return (
@@ -27,9 +27,11 @@ export default function ArticleDetailPage() {
         )
     }
 
-    const related = articles
-        .filter((a) => a.category === article.category && a.id !== article.id)
-        .slice(0, 3)
+    const related = relatedLoading || relatedError
+        ? []
+        : articles
+            .filter((a) => a.category === article.category && a.id !== article.id)
+            .slice(0, 3)
 
     return (
         <>
@@ -53,6 +55,12 @@ export default function ArticleDetailPage() {
                     {article.content ?? ''}
                 </div>
             </article>
+
+            {relatedError && (
+                <p className="alert alert-warning mt-4" role="alert">
+                    Không thể tải tin liên quan: {relatedError}
+                </p>
+            )}
 
             {related.length > 0 && (
                 <section className="mt-5">

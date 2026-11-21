@@ -13,9 +13,17 @@ const server = createApp(pool).listen(port, () => {
 })
 
 async function shutdown() {
-    server.close(async () => {
-        await pool.end()
-        process.exit(0)
+    server.close(async (error) => {
+        if (error) {
+            console.error('Failed to close API server:', error)
+            process.exitCode = 1
+        }
+        try {
+            await pool.end()
+        } catch (poolError) {
+            console.error('Failed to close database pool:', poolError)
+            process.exitCode = 1
+        }
     })
 }
 

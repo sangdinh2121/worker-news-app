@@ -3,15 +3,29 @@ import express from 'express'
 
 export function createApp(pool) {
     const app = express()
+    const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean)
 
     app.use(cors({
-        origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+        origin(origin, callback) {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true)
+                return
+            }
+            callback(new Error('Origin is not allowed by CORS.'))
+        },
     }))
     app.use(express.json())
 
     app.get('/api/health', async (_request, response) => {
-        await pool.query('SELECT 1')
-        response.json({ status: 'ok', database: 'connected' })
+        try {
+            await pool.query('SELECT 1')
+            response.json({ status: 'ok', database: 'connected' })
+        } catch {
+            response.status(503).json({ status: 'error', database: 'unavailable' })
+        }
     })
 
     app.get('/api/categories', async (_request, response) => {
@@ -59,6 +73,17 @@ export function createApp(pool) {
     })
 
     app.use((error, _request, response, _next) => {
+        if (response.headersSent) {
+            return
+        }
+        if (error.type === 'entity.parse.failed') {
+            response.status(400).json({ message: 'Request body must contain valid JSON.' })
+            return
+        }
+        if (error.message === 'Origin is not allowed by CORS.') {
+            response.status(403).json({ message: 'Origin is not allowed.' })
+            return
+        }
         console.error('API request failed:', error)
         response.status(500).json({ message: 'Internal server error.' })
     })
