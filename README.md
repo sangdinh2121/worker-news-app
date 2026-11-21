@@ -47,6 +47,8 @@ Mở địa chỉ frontend do Vite in ra, thường là `http://localhost:5173`.
 - `GET /api/articles` — danh sách bài viết
 - `GET /api/articles/:id` — bài viết theo ID
 
+Hợp đồng endpoint, cấu trúc dữ liệu và mã lỗi được mô tả trong [API_CONTRACT.md](API_CONTRACT.md).
+
 Chạy kiểm thử API:
 
 ```powershell
