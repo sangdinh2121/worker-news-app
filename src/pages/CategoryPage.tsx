@@ -1,13 +1,20 @@
-import {Link, useParams} from "react-router-dom";
-import {useArticles} from "../hooks/useArticles.ts";
-import {categories} from "../data/categories.ts";
-import ArticleList from "../component/ArticleList.tsx";
+import { Link, useParams } from 'react-router-dom'
+import { useArticles } from '../hooks/useArticles'
+import { useCategories } from '../hooks/useCategories'
+import ArticleList from '../component/ArticleList'
 
 export default function CategoryPage() {
-    const {slug} = useParams();
+    const { slug } = useParams()
     const { articles, isLoading, error } = useArticles()
-    const category = categories.find((c) => c.slug === slug)
+    const { categories, isLoading: categoriesLoading, error: categoriesError } = useCategories()
+    const category = categories.find((item) => item.slug === slug)
 
+    if (categoriesLoading) {
+        return <p className="text-center text-muted" role="status">Đang tải danh mục...</p>
+    }
+    if (categoriesError) {
+        return <p className="alert alert-danger" role="alert">{categoriesError}</p>
+    }
     if (!category) {
         return (
             <div className="text-center py-5">

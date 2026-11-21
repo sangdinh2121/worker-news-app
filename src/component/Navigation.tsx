@@ -1,10 +1,13 @@
-import {NavLink} from "react-router-dom";
-import { categories } from '../data/categories'
+import { NavLink } from 'react-router-dom'
+import { useCategories } from '../hooks/useCategories'
 
 export default function Navigation() {
+    const { categories, error } = useCategories()
+
     return (
         <nav className="bg-danger">
             <div className="container">
+                {error && <p className="text-white small mb-0 py-1" role="alert">{error}</p>}
                 <ul className="nav">
                     <li className="nav-item">
                         <NavLink
