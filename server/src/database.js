@@ -22,6 +22,8 @@ export function createPool() {
         waitForConnections: true,
         connectionLimit: 10,
         connectTimeout: 10000,
+        dateStrings: true,
+        charset: 'utf8mb4',
         ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
     })
 }
