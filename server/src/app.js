@@ -1,5 +1,7 @@
 import cors from 'cors'
 import express from 'express'
+import bcrypt from 'bcryptjs'
+import { authenticate, signToken } from './auth.js'
 
 export function createApp(pool) {
     const app = express()
@@ -66,6 +68,38 @@ export function createApp(pool) {
         }
 
         response.json(articles[0])
+    })
+
+    //dăng ký
+    app.post('/api/auth/register', async (request, response) => {
+        const { username, password, fullName } = request.body ?? {}
+        const name = String(username ?? '').trim()
+        const display = String(fullName ?? '').trim()
+
+        if (!/^[a-zA-Z0-9_]{3,30}$/.test(name)) {
+            return response.status(400).json({ message: 'Tên đăng nhập gồm 3-30 ký tự chữ, số hoặc dấu gạch dưới.' })
+        }
+        if (typeof password !== 'string' || password.length < 6) {
+            return response.status(400).json({ message: 'Mật khẩu phải có ít nhất 6 ký tự.' })
+        }
+        if (!display || display.length > 100) {
+            return response.status(400).json({ message: 'Vui lòng nhập họ tên (tối đa 100 ký tự).' })
+        }
+
+        const passwordHash = await bcrypt.hash(password, 10)
+        try {
+            const [result] = await pool.query(
+                'INSERT INTO users (username, password_hash, full_name) VALUES (?, ?, ?)',
+                [name, passwordHash, display],
+            )
+            const user = { id: result.insertId, username: name, fullName: display }
+            response.status(201).json({ token: signToken(user), user })
+        } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY') {
+                return response.status(409).json({ message: 'Tên đăng nhập đã tồn tại.' })
+            }
+            throw error
+        }
     })
 
     app.use((request, response) => {
