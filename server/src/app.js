@@ -55,7 +55,7 @@ export function createApp(pool) {
 
         const [articles] = await pool.query(
             `SELECT id, slug, title, summary, content, image, author,
-                    category_slug AS category, published_at, featured
+                    category_slug AS category, published_at AS publishedAt, featured
              FROM articles
              WHERE id = ?`,
             [id],
