@@ -32,7 +32,7 @@ function mapArticle(value: unknown): Article {
         typeof article.slug !== 'string' ||
         !isCategorySlug(article.category) ||
         typeof article.summary !== 'string' ||
-        typeof article.published_at !== 'string'
+        typeof article.publishedAt !== 'string'
     ) {
         throw new Error('API trả về dữ liệu bài viết không hợp lệ.')
     }
@@ -47,7 +47,7 @@ function mapArticle(value: unknown): Article {
             ? article.image
             : '/images/background.jpg',
         author: typeof article.author === 'string' ? article.author : 'Ban biên tập',
-        publishedAt: article.published_at,
+        publishedAt: article.publishedAt,
         featured: Boolean(article.featured),
         content: typeof article.content === 'string' ? article.content : undefined,
     }
