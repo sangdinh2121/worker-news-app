@@ -102,6 +102,38 @@ export function createApp(pool) {
         }
     })
 
+    //đăng nhập
+    app.post('/api/auth/login', async (request, response) => {
+        const { username, password } = request.body ?? {}
+        if (typeof username !== 'string' || typeof password !== 'string') {
+            return response.status(400).json({ message: 'Thiếu tên đăng nhập hoặc mật khẩu.' })
+        }
+
+        const [rows] = await pool.query(
+            'SELECT id, username, password_hash, full_name FROM users WHERE username = ?',
+            [username.trim()],
+        )
+        const row = rows[0]
+        const valid = row && (await bcrypt.compare(password, row.password_hash))
+        if (!valid) {
+            return response.status(401).json({ message: 'Sai tên đăng nhập hoặc mật khẩu.' })
+        }
+
+        const user = { id: row.id, username: row.username, fullName: row.full_name }
+        response.json({ token: signToken(user), user })
+    })
+
+    app.get('/api/auth/me', authenticate, async (request, response) => {
+        const [rows] = await pool.query(
+            'SELECT id, username, full_name AS fullName FROM users WHERE id = ?',
+            [request.user.id],
+        )
+        if (rows.length === 0) {
+            return response.status(401).json({ message: 'Tài khoản không còn tồn tại.' })
+        }
+        response.json(rows[0])
+    })
+
     app.use((request, response) => {
         response.status(404).json({ message: `Route not found: ${request.method} ${request.path}` })
     })
