@@ -70,6 +70,74 @@ export function createApp(pool) {
         response.json(articles[0])
     })
 
+    app.get('/api/articles/:id/comments', async (request, response) => {
+        const articleId = Number(request.params.id)
+        if (!Number.isSafeInteger(articleId) || articleId < 1) {
+            return response.status(400).json({
+                message: 'Article id must be a positive integer.',
+            })
+        }
+
+        const [articles] = await pool.query(
+            'SELECT id FROM articles WHERE id = ?',
+            [articleId],
+        )
+        if (articles.length === 0) {
+            return response.status(404).json({ message: 'Article not found.' })
+        }
+
+        const [comments] = await pool.query(
+            `SELECT comments.id, comments.article_id AS articleId, comments.content,
+                    comments.created_at AS createdAt, users.full_name AS author
+             FROM comments
+             JOIN users ON users.id = comments.user_id
+             WHERE comments.article_id = ?
+             ORDER BY comments.created_at ASC, comments.id ASC`,
+            [articleId],
+        )
+        response.json(comments)
+    })
+
+    app.post('/api/articles/:id/comments', authenticate, async (request, response) => {
+        const articleId = Number(request.params.id)
+        if (!Number.isSafeInteger(articleId) || articleId < 1) {
+            return response.status(400).json({
+                message: 'Article id must be a positive integer.',
+            })
+        }
+
+        const content = typeof request.body?.content === 'string'
+            ? request.body.content.trim()
+            : ''
+        if (!content || content.length > 1000) {
+            return response.status(400).json({
+                message: 'Comment must contain between 1 and 1000 characters.',
+            })
+        }
+
+        const [articles] = await pool.query(
+            'SELECT id FROM articles WHERE id = ?',
+            [articleId],
+        )
+        if (articles.length === 0) {
+            return response.status(404).json({ message: 'Article not found.' })
+        }
+
+        const [result] = await pool.query(
+            'INSERT INTO comments (article_id, user_id, content) VALUES (?, ?, ?)',
+            [articleId, request.user.id, content],
+        )
+        const [comments] = await pool.query(
+            `SELECT comments.id, comments.article_id AS articleId, comments.content,
+                    comments.created_at AS createdAt, users.full_name AS author
+             FROM comments
+             JOIN users ON users.id = comments.user_id
+             WHERE comments.id = ?`,
+            [result.insertId],
+        )
+        response.status(201).json(comments[0])
+    })
+
     //dăng ký
     app.post('/api/auth/register', async (request, response) => {
         const { username, password, fullName } = request.body ?? {}

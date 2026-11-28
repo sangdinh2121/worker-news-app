@@ -18,6 +18,8 @@
 Copy-Item server\.env.example server\.env
 ```
 
+Thay `JWT_SECRET` trong `server/.env` bằng một chuỗi bí mật ngẫu nhiên; backend dùng giá trị này để ký token đăng nhập.
+
 Không commit `server/.env`; file này đã được Git ignore.
 
 4. Cấu hình URL API cho frontend:
@@ -46,6 +48,9 @@ Mở địa chỉ frontend do Vite in ra, thường là `http://localhost:5173`.
 - `GET /api/categories` — danh sách danh mục
 - `GET /api/articles` — danh sách bài viết
 - `GET /api/articles/:id` — bài viết theo ID
+- `GET /api/articles/:id/comments` — bình luận của bài viết
+- `POST /api/articles/:id/comments` — gửi bình luận (cần đăng nhập)
+- `POST /api/auth/register` và `POST /api/auth/login` — tạo tài khoản và đăng nhập
 
 Hợp đồng endpoint, cấu trúc dữ liệu và mã lỗi được mô tả trong [API_CONTRACT.md](API_CONTRACT.md).
 
