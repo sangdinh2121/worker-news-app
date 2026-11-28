@@ -9,7 +9,7 @@ Tài liệu này là hợp đồng dữ liệu chung giữa frontend và backend
 - Dữ liệu và lỗi đều trả về JSON; tên trường API dùng `snake_case` khi có nhiều từ.
 - Frontend ánh xạ `published_at` thành `publishedAt` trong kiểu `Article`.
 - Ngày `published_at` trả về theo chuỗi ISO 8601 do MySQL driver tuần tự hóa, ví dụ `2026-11-02T00:00:00.000Z`.
-- API chỉ đọc dữ liệu; hiện chưa có endpoint tạo, sửa hoặc xóa.
+- Bài viết và danh mục chỉ đọc; người dùng có thể đăng ký, đăng nhập và gửi bình luận.
 
 ## Endpoint
 
@@ -19,6 +19,31 @@ Tài liệu này là hợp đồng dữ liệu chung giữa frontend và backend
 | `GET` | `/categories` | `200` | Lấy danh sách danh mục |
 | `GET` | `/articles` | `200` | Lấy danh sách bài viết mới nhất trước |
 | `GET` | `/articles/:id` | `200` | Lấy một bài viết theo ID |
+| `GET` | `/articles/:id/comments` | `200` | Lấy bình luận của bài viết |
+| `POST` | `/articles/:id/comments` | `201` | Gửi bình luận (cần JWT Bearer) |
+| `POST` | `/auth/register` | `201` | Tạo tài khoản |
+| `POST` | `/auth/login` | `200` | Đăng nhập và nhận JWT |
+| `GET` | `/auth/me` | `200` | Lấy tài khoản hiện tại (cần JWT Bearer) |
+
+### Bình luận
+
+`GET /articles/:id/comments` trả về danh sách bình luận theo thời gian tạo tăng dần:
+
+```json
+[
+  {
+    "id": 1,
+    "articleId": 2,
+    "content": "Bài viết rất hữu ích.",
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "author": "Người đọc"
+  }
+]
+```
+
+`POST /articles/:id/comments` nhận `{ "content": "..." }` và cần header
+`Authorization: Bearer <token>`. Nội dung sau khi loại bỏ khoảng trắng phải có
+1–1000 ký tự. Bình luận được gắn với tài khoản từ JWT, không nhận `user_id` từ client.
 
 ## Cấu trúc dữ liệu
 
@@ -84,6 +109,8 @@ Lỗi có cấu trúc:
 | `400` | ID không phải số nguyên dương hoặc JSON request sai định dạng |
 | `403` | Origin không nằm trong `FRONTEND_URL` |
 | `404` | Không tìm thấy bài viết hoặc đường dẫn API |
+| `401` | Thiếu/sai JWT hoặc tài khoản không tồn tại |
+| `409` | Tên đăng nhập đã tồn tại |
 | `500` | Lỗi xử lý request hoặc truy vấn database |
 | `503` | API hoạt động nhưng không kết nối được database (`/health`) |
 

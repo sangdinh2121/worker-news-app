@@ -4,6 +4,7 @@ import { useArticle } from '../hooks/useArticle'
 import { getCategoryName } from '../data/categories'
 import ArticleList from '../component/ArticleList'
 import FavoriteButton from '../component/FavoriteButton'
+import CommentsSection from '../component/CommentsSection'
 
 export default function ArticleDetailPage() {
     const { id } = useParams()
@@ -55,6 +56,8 @@ export default function ArticleDetailPage() {
                     {article.content ?? ''}
                 </div>
             </article>
+
+            <CommentsSection key={article.id} articleId={article.id} />
 
             {relatedError && (
                 <p className="alert alert-warning mt-4" role="alert">
