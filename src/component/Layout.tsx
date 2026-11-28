@@ -3,6 +3,7 @@ import {Outlet} from "react-router-dom";
 import Footer from "./Footer.tsx";
 import Navigation from "./Navigation.tsx";
 import { useFavorites } from "../hooks/favoritesContext.ts";
+import ScrollToTopButton from "./ScrollToTopButton.tsx";
 
 export default function Layout() {
     const { error } = useFavorites()
@@ -16,6 +17,7 @@ export default function Layout() {
                 <Outlet />
             </main>
             <Footer />
+            <ScrollToTopButton />
         </>
     )
 }
